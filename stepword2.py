@@ -1,18 +1,15 @@
 import itertools
 
+global ans
 global wordlist
 global letters
-global ans
 global alphabet
 global possible_letters
-global best_ans
-
-best_ans=[]
+ans=[]
 possible_letters=[]
 alphabet={'a':1,'b':1,'c':2,'d':1,'e':1,'f':2,'g':1,'h':2,'i':1,'j':3,'k':3,'l':2,'m':2,'n':1,'o':1,'p':2,'q':2,'r':1,'s':1,'t':1,'u':1,'v':2,'w':2,'x':3,'y':2,'z':3}
 wordlist = {}
 letters=""
-ans=[]
 
 def sortdict():
     
@@ -56,34 +53,31 @@ def findword():
     for word in possible_letters:
         if (word in wordlist) and (wordlist[word] not in ans) :
             ans=ans+wordlist[word].split(" ")
-    print ans
 
-    if 'q'in letters :
+    if 'q' in letters:
         u_in_letters=letters.count('u')-letters.count('q')
-        for word in ans:
-            
-            if ( word.count('u')-word.count('q')) > u_in_letters and ('u' in word):
-                print "..remove.."+word
-                ans.remove(word)
-    
+        for i in range(0,len(ans)):
+
+            if ( ans[i].count('u')-ans[i].count('q')) > u_in_letters and ('u' in ans[i]):
+                ans[i]='0'
+    ans=list(filter(lambda x:x!='0',ans))
+    ans.sort(key=len,reverse=True)
+    print ans
             
 
 def makescore():
+    best_index=0
     maxscore=0
-    global best_ans
-    best_ans[:]=[]
-    for word in ans:
+    l=len(ans)
+    for i in range(0,l):
         sumscore=0
-        for i in word:
-            sumscore+=alphabet[i]
+        for c in ans[i]:
+            sumscore+=alphabet[c]
         if sumscore>maxscore:
             maxscore=sumscore
-            best_ans.append(word)
-            
-    "Choose the longest anagram"
-    best_ans=sorted(best_ans,key=lambda x:len(x),reverse=True)
-                
-    print "Best answer is %s | score %d"%(best_ans[0],(maxscore+1)**2)
+            best_index=i
+    print "Best answer is %s | score %d"%(ans[best_index],(maxscore+1)*(maxscore+1))
+    
 
 sortdict()
 while inputletter():
@@ -91,6 +85,8 @@ while inputletter():
     create_possible_letters()
     findword()
     makescore()
+    
+                
 
 
 
