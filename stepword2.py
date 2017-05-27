@@ -58,12 +58,14 @@ def findword():
             ans=ans+wordlist[word].split(" ")
     print ans
 
-
-    if 'q' in letters:
-        u_in_letters=letters.count("u")
+    if 'q'in letters :
+        u_in_letters=letters.count('u')-letters.count('q')
         for word in ans:
-            if u_in_letters-1<word.count("u") and 'q'not in word :
+            
+            if ( word.count('u')-word.count('q')) > u_in_letters and ('u' in word):
+                print "..remove.."+word
                 ans.remove(word)
+    
             
 
 def makescore():
