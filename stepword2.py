@@ -5,7 +5,9 @@ global letters
 global ans
 global alphabet
 global possible_letters
+global best_ans
 
+best_ans=[]
 possible_letters=[]
 alphabet={'a':1,'b':1,'c':2,'d':1,'e':1,'f':2,'g':1,'h':2,'i':1,'j':3,'k':3,'l':2,'m':2,'n':1,'o':1,'p':2,'q':2,'r':1,'s':1,'t':1,'u':1,'v':2,'w':2,'x':3,'y':2,'z':3}
 wordlist = {}
@@ -18,18 +20,23 @@ def sortdict():
     "print f.read()"
     for word in f:
         word=word.lower()
-        word=word.rstrip()
-    	wordlist.update({"".join(sorted(word)).rstrip():word.rstrip()})
+        sortedword="".join(sorted(word))
+        sortedword=sortedword.strip("\n")
+        if wordlist.has_key(sortedword):
+            wordlist[sortedword]=wordlist[sortedword]+" "+word.strip("\n")
+        else:
+            wordlist.update({sortedword:word.strip("\n")})
     f.close()
     print wordlist
     print "Dictionary prepared"
     
 def inputletter():
     global letters
-    letters=raw_input("type your leters in lowercase (for Qu type qu):")
-   
+    letters=raw_input("type your leters in lowercase (for Qu type qu)['stop' for exit]:")
+    if letters=='stop':
+        return 0
     letters="".join(sorted(letters))
-    print letters
+    return 1
 
 def create_possible_letters():
     global possible_letters
@@ -48,30 +55,33 @@ def findword():
     ans[:]=[]
     for word in possible_letters:
         if (word in wordlist) and (wordlist[word] not in ans) :
-            ans.append(wordlist[word])
+            ans=ans+wordlist[word].split(" ")
     print ans
             
 
 def makescore():
     maxscore=0
-    best_ans=""
+    global best_ans
+    best_ans[:]=[]
     for word in ans:
         sumscore=0
         for i in word:
             sumscore+=alphabet[i]
         if sumscore>maxscore:
             maxscore=sumscore
-            best_ans=word
-        
-    print "Best answer is %s | score %d"%(best_ans,maxscore)
-
+            best_ans.append(word)
+            
+    "Choose the longest anagram"
+    best_ans=sorted(best_ans,key=lambda x:len(x),reverse=True)
+                
+    print "Best answer is %s | score %d"%(best_ans[0],(maxscore+1)**2)
 
 sortdict()
-
-while True:
-    inputletter()
+while inputletter():
+    
     create_possible_letters()
     findword()
     makescore()
+
 
 
